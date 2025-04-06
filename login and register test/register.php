@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phone = $_POST['phone'];
     $address = $_POST['address'];
     $city = $_POST['city'];
-    $gender = $_POST['gender'];
+    $gender = $_POST['gender-status'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 }
@@ -27,56 +27,61 @@ if (empty($username) || empty($email) || empty($dob) || empty($phone) || empty($
     echo "Password should be at least 8 characters long";
 } 
 
-if(isset($_POST['submit'])){
-    $file_name = $_FILES['profile_picture']['name'];
-    $temp_name = $_FILES['profile_picture']['tmp_name'];
-    $folder = "./images/".$file_name;
-    $uploded = move_uploaded_file($temp_name, $folder.$file_name);
 
-    if($uploaded){
+if (isset($_POST['submit'])) {
+    $file_name = $_FILES['profile_picture']['name'] ?? null;
+    $temp_name = $_FILES['profile_picture']['tmp_name'];
+    $folder = "./images/" . $file_name;
+
+    $uploaded = move_uploaded_file($temp_name, $folder);
+
+    if ($uploaded) {
         echo "Image uploaded successfully";
     } else {
         echo "Failed to upload image";
     }
 
-}
-
-
-    // hash the password
+    // Hash the password
     $password = password_hash($password, PASSWORD_BCRYPT);
 
-
-    // check if the email already exists in the database    
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+    // Check if the email already exists in the database
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = :email");
     $stmt->bindParam(':email', $email);
     $stmt->execute();
     $count = $stmt->rowCount();
     if ($count > 0) {
         echo "Email already exists";
     } else {
-        echo "Email is available";
+        try {
+            // Insert user information into the database
+            
+            $stmt = $conn->prepare("INSERT INTO users (username, email, date_of_birth, phone, address, city, gender, password, profile_picture) 
+                                    VALUES (:username, :email, :date_of_birth, :phone, :address, :city, :gender, :password, :profile_picture)");
+            // Bind parameters
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':date_of_birth', $dob); // Assurez-vous que $dob est défini
+            $stmt->bindParam(':phone', $phone);
+            $stmt->bindParam(':address', $address);
+            $stmt->bindParam(':city', $city);
+            $stmt->bindParam(':gender', $gender);
+            $stmt->bindParam(':password', $password);
+            $stmt->bindParam(':profile_picture', $file_name); // Assurez-vous que $file_name est défini
+            $stmt->execute();
+            // Check if the registration was successful
+            if ($stmt->rowCount() > 0) {
+                echo "Registration successful";
+            } else {
+                echo "Registration failed";
+            }
+            header("Location: login.php");
+            exit();
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
+}
 
-
-    //fill the table user information using pdo
-    try {
-        $stmt = $pdo->prepare("INSERT INTO users (username, email, dob, phone, address, city, gender, password, profile_picture) VALUES (:username, :email, :dob, :phone, :address, :city, :gender, :password, :profile_picture)");
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':dob', $dob);
-        $stmt->bindParam(':phone', $phone);
-        $stmt->bindParam(':address', $address);
-        $stmt->bindParam(':city', $city);
-        $stmt->bindParam(':gender', $gender);
-        $stmt->bindParam(':password', $password);
-        $stmt->bindParam(':profile_picture', $file_name);
-        $stmt->execute();
-        echo "Registration successful";
-        header("Location: login.php");
-        exit();
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
-    }
 
 
 ?>
@@ -98,7 +103,7 @@ if(isset($_POST['submit'])){
 <div class="container">
     <h1>register form</h1>
 
-    <form action="" method="post" enctype="multipart/form-data" accept="image/*"> >
+    <form action="" method="post" enctype="multipart/form-data" accept="image/*"> 
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" class="form-control" id="username" name="username" required>
@@ -132,7 +137,7 @@ if(isset($_POST['submit'])){
                 <option value="other">Other</option>
             </select>
         </div>
-        <div class="form-groupe">
+        <div class="form-group">
             <label for="profile_picture"></label>
             <input type="file" class="form-control" id="profile_picture" name="profile_picture" accept="image/*">
         </div>
@@ -144,7 +149,7 @@ if(isset($_POST['submit'])){
             <label for="confirm_password">Confirm Password:</label>
             <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" name="submit" class="btn btn-primary">Register</button>
         <a href="login.php" class="btn btn-secondary">Login</a>
     </form>
     <br>

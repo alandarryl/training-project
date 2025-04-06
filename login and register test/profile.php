@@ -9,8 +9,8 @@ if (!isset($_SESSION['logged_in'])) {
 
 // Get user data from the database
 $iduser = $_SESSION['iduser'];
-$stmt = $conn->prepare("SELECT * FROM users WHERE iduser = :iduser");
-$stmt->bindParam(':iduser', $iduser);
+$stmt = $conn->prepare("SELECT * FROM users WHERE id = :id");
+$stmt->bindParam(':id', $_SESSION['iduser']);
 $stmt->execute();
 
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -47,14 +47,14 @@ $profile_picture = empty($user['profile_picture']) ? 'default.jpg' : $user['prof
 
             <div class="profile-info">
                 <ul>
-                    <li>iduser : <?php echo $user['iduser']; ?></li>
+                    <li>iduser : <?php echo $user['id']; ?></li>
                     <li>username : <?php echo $user['username']; ?></li>
                     <li>email : <?php echo $user['email']; ?></li>
                     <li>address : <?php echo $user['address']; ?></li>
                     <li>city : <?php echo $user['city']; ?></li>
                     <li>gender : <?php echo $user['gender']; ?></li>
-                    <li>phone number : <?php echo $user['phone_number']; ?></li>
-                    <li>date of birth : <?php echo $user['dob']; ?></li>
+                    <li>phone number : <?php echo $user['phone']; ?></li>
+                    <li>date of birth : <?php echo $user['date_of_birth']; ?></li>
                 </ul>
             </div>
 
