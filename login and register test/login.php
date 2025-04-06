@@ -65,7 +65,7 @@ if(isset($_POST['email']) && isset($_POST['password'])) {
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
-        <a href="register.php" class="btn btn-secondary">Reset</a>
+        <a href="register.php" class="btn btn-secondary">Register</a>
     </form>
     <br>
 </div>
