@@ -2,9 +2,9 @@
 
 
 $servername = "localhost";
-$servername = "root";
+$username = "root";
 $password = "";
-$dbname = "training_db";
+$dbname = "training_database";
 
 // Create connection
 
