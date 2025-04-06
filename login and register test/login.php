@@ -20,8 +20,10 @@ if(isset($_POST['email']) && isset($_POST['password'])) {
             $_SESSION['logged_in'] = true;
             $_SESSION['iduser'] = $user['id']; // Assurez-vous que la colonne `id` existe
             $_SESSION['email'] = $user['email'];
-            header("Location: profile.php");
-            exit();
+            // header("Location: profile.php");
+            // exit();
+            echo $_SESSION['iduser'];
+            echo $_SESSION['email'];
         } else {
             // Mot de passe incorrect
             echo "<div class='alert alert-danger'>Invalid email or password.</div>";
