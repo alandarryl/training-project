@@ -61,7 +61,7 @@ $profile_picture = empty($user['profile_picture']) ? 'default.jpg' : $user['prof
             </div>
 
             <a href="../add new articles/add_product.php" class="btn btn-primary" >Add new product</a>
-            <a href="../testing ajax/add_product.php" class="btn btn-primary" >Add new product with ajax</a>
+            <a href="../testing ajax/add_productAjx.php" class="btn btn-primary" >Add new product with ajax</a>
 
             </div>
 
