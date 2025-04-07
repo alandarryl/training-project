@@ -20,7 +20,7 @@ if(isset($_POST['email']) && isset($_POST['password'])) {
             $_SESSION['logged_in'] = true;
             $_SESSION['iduser'] = $user['id']; // Assurez-vous que la colonne `id` existe
             $_SESSION['email'] = $user['email'];
-            // header("Location: profile.php");
+            header("Location: profile.php");
             // exit();
             echo $_SESSION['iduser'];
             echo $_SESSION['email'];
